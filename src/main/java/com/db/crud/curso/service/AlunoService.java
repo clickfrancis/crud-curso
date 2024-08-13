@@ -1,16 +1,18 @@
 package com.db.crud.curso.service;
 
 import com.db.crud.curso.model.Aluno;
-import com.db.crud.curso.model.dto.responseDto.AlunoNomeResponseDto;
-import com.db.crud.curso.model.dto.responseDto.AlunoRequestDto;
+import com.db.crud.curso.model.Curso;
+import com.db.crud.curso.model.dto.requestDto.AlunoRequestDto;
 import com.db.crud.curso.model.dto.responseDto.AlunoResponseDto;
 import com.db.crud.curso.model.dto.responseDto.AlunoUpdateDto;
 import com.db.crud.curso.model.mappers.AlunoMapper;
 import com.db.crud.curso.repository.AlunoRepository;
+import com.db.crud.curso.repository.CursoRepository;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -20,24 +22,23 @@ import java.util.stream.Collectors;
 @NoArgsConstructor
 public class AlunoService {
 
-    private AlunoMapper alunoMapper;
+    private final AlunoMapper alunoMapper = AlunoMapper.INSTANCE;
 
     @Autowired
     private AlunoRepository alunoRepository;
 
-    public AlunoService(AlunoMapper alunoMapper) {
-        this.alunoMapper = alunoMapper;
-    }
+    @Autowired
+    private CursoRepository cursoRepository;
 
-    public AlunoResponseDto cadastrarAluno(AlunoRequestDto alunoRequestDto) {
-        Aluno aluno = alunoMapper.alunoToEntity(alunoRequestDto);
+    public AlunoResponseDto cadastrarAluno(AlunoRequestDto content) {
+        Aluno aluno = alunoMapper.toEntity(content);
         alunoRepository.save(aluno);
         return  alunoMapper.alunoResponseToDto(aluno);
     }
 
-    public AlunoResponseDto atualizarAluno(AlunoUpdateDto alunoUpdateDto) {
-        Aluno aluno = alunoRepository.findByMatricula(alunoUpdateDto.matricula()).orElseThrow(() -> new RuntimeException("Not found"));
-        alunoMapper.atualizarEntityFromDto(alunoUpdateDto, aluno);
+    public AlunoResponseDto atualizarAluno(AlunoUpdateDto content, Long matricula) {
+        Aluno aluno = alunoRepository.findByMatricula(matricula).orElseThrow(() -> new RuntimeException("Not found"));
+        alunoMapper.atualizarEntityFromDto(content, aluno);
         alunoRepository.save(aluno);
         return alunoMapper.alunoResponseToDto(aluno);
     }
@@ -49,4 +50,25 @@ public class AlunoService {
                 .collect(Collectors.toList());
     }
 
+    public void excluirAluno(Long matricula) {
+        Aluno aluno = alunoRepository.findByMatricula(matricula).orElseThrow(() -> new RuntimeException("Not found!"));
+        alunoRepository.delete(aluno);
+    }
+
+    @Transactional
+    public void desvincularAlunoDoCurso(Long matriculaAluno, Long matriculaCurso) {
+        Aluno aluno = alunoRepository.findByMatricula(matriculaAluno)
+                .orElseThrow(() -> new RuntimeException("Aluno not found!"));
+        Curso curso = cursoRepository.findByMatricula(matriculaCurso)
+                .orElseThrow(() -> new RuntimeException("Curso not found!"));
+
+        if(curso.getAlunos().contains(aluno)) {
+            aluno.getCursos().remove(curso);
+            alunoRepository.save(aluno);
+        }
+    }
+
+    public boolean verificarCadastroNoCurso(Long matricula, String nome) {
+        return alunoRepository.isAlunoCadastradoNoCurso(matricula, nome);
+    }
 }

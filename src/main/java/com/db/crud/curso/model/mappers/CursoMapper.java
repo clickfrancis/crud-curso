@@ -1,10 +1,12 @@
 package com.db.crud.curso.model.mappers;
 
 import com.db.crud.curso.model.dto.requestDto.CursoRequestDto;
+import com.db.crud.curso.model.dto.requestDto.CursoUpdateDto;
 import com.db.crud.curso.model.dto.responseDto.CursoAlunoListResponseDto;
 import com.db.crud.curso.model.dto.responseDto.CursoResponseDto;
 import com.db.crud.curso.model.Curso;
 import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
 import org.mapstruct.MappingTarget;
 import org.mapstruct.factory.Mappers;
 
@@ -13,13 +15,12 @@ public interface CursoMapper {
 
     CursoMapper INSTANCE = Mappers.getMapper(CursoMapper.class);
 
-    CursoRequestDto cursoToRequestDto(Curso curso);
-
     CursoResponseDto cursoToReponseDto(Curso curso);
 
-    Curso toEntity(CursoRequestDto cursoResquestDto);
+    @Mapping(target = "id", ignore = true)
+    Curso toEntity(CursoRequestDto dto);
 
-    Curso atualizar(CursoRequestDto cursoRequestDto, @MappingTarget Curso curso);
+    void atualizar(CursoUpdateDto cursoUpdateDto, @MappingTarget Curso curso);
 
     CursoAlunoListResponseDto cursoAlunoListToReponseDto(Curso curso);
 

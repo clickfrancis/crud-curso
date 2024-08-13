@@ -8,6 +8,7 @@ import jakarta.persistence.ManyToMany;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.GenerationType;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -28,8 +29,8 @@ public class Curso {
     @Column(name = "nome_curso")
     private String nome;
 
-    @NotBlank
-    @Column(name = "matricula_curso")
+    @NotNull
+    @Column(name = "matricula_curso", unique = true)
     private Long matricula;
 
     @ManyToMany(mappedBy = "cursos")

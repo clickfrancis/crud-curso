@@ -1,16 +1,18 @@
 package com.db.crud.curso.service;
 
+import com.db.crud.curso.model.Aluno;
 import com.db.crud.curso.model.dto.requestDto.CursoRequestDto;
-import com.db.crud.curso.model.dto.responseDto.CursoAlunoListResponseDto;
+import com.db.crud.curso.model.dto.requestDto.CursoUpdateDto;
 import com.db.crud.curso.model.dto.responseDto.CursoResponseDto;
-import com.db.crud.curso.model.mappers.AlunoMapper;
 import com.db.crud.curso.model.mappers.CursoMapper;
 import com.db.crud.curso.model.Curso;
-import com.db.crud.curso.repository.CursoReposity;
+import com.db.crud.curso.repository.AlunoRepository;
+import com.db.crud.curso.repository.CursoRepository;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -21,46 +23,59 @@ import java.util.stream.Collectors;
 public class CursoService {
 
     @Autowired
-    CursoReposity cursoReposity;
+    CursoRepository cursoRepository;
 
-    private CursoMapper cursoMapper;
+    @Autowired
+    private AlunoRepository alunoRepository;
 
-    private AlunoMapper alunoMapper;
+    private final CursoMapper cursoMapper = CursoMapper.INSTANCE;
 
-    public CursoService(CursoMapper cursoMapper) {
-        this.cursoMapper = cursoMapper;
-    }
-
-    public CursoResponseDto criarCurso(CursoRequestDto cursoRequestDto) {
-        Curso curso = cursoMapper.toEntity(cursoRequestDto);
-        cursoReposity.save(curso);
+    public CursoResponseDto cadastrarCurso(CursoRequestDto content) {
+        Curso curso = cursoMapper.toEntity(content);
+        cursoRepository.save(curso);
         return cursoMapper.cursoToReponseDto(curso);
     }
 
-    public CursoResponseDto atualizarCurso(CursoRequestDto cursoRequestDto) {
-        Curso curso = cursoReposity.findByMatricula(cursoRequestDto.matricula()).orElseThrow(() -> new RuntimeException("not found"));
-        cursoMapper.atualizar(cursoRequestDto, curso);
-        cursoReposity.save(curso);
+    public CursoResponseDto atualizarCurso(CursoUpdateDto content, Long matricula) {
+        Curso curso = cursoRepository.findByMatricula(matricula).orElseThrow(() -> new RuntimeException("not found"));
+        cursoMapper.atualizar(content, curso);
+        cursoRepository.save(curso);
         return cursoMapper.cursoToReponseDto(curso);
     }
 
     public List<CursoResponseDto> listaTodosCurso() {
-        return cursoReposity.findAll()
+        return cursoRepository.findAll()
                 .stream()
                 .map(cursoMapper::cursoToReponseDto)
                 .collect(Collectors.toList());
     }
 
-    public List<CursoAlunoListResponseDto> listarTodosAlunosDoCurso(String nome) {
-        return cursoReposity.findByAlunosDoCurso(nome)
-                .stream()
-                .map(cursoMapper::cursoAlunoListToReponseDto)
-                .collect(Collectors.toList());
+    public List<String> listarTodosAlunosDoCurso(String nome) {
+        return cursoRepository.findByAlunosDoCurso(nome);
+
+
+
     }
 
-    public void deletarCurso(Long matricula) {
-        Curso curso = cursoReposity.findByMatricula(matricula).orElseThrow(() -> new RuntimeException("Not found!"));
-        cursoReposity.delete(curso);
+    public void excluirCurso(Long matricula) {
+        Curso curso = cursoRepository.findByMatricula(matricula).orElseThrow(() -> new RuntimeException("Not found!"));
+        cursoRepository.delete(curso);
     }
+
+    @Transactional
+    public CursoResponseDto vincularAlunoACurso(Long matriculaCurso, Long matriculaAluno) {
+        Aluno aluno = alunoRepository.findByMatricula(matriculaAluno).orElseThrow(() -> new RuntimeException("Not found!"));
+        Curso curso = cursoRepository.findByMatricula(matriculaCurso).orElseThrow(() -> new RuntimeException("Not found!"));
+
+        if(!curso.getAlunos().contains(aluno)) {
+            curso.getAlunos().add(aluno);
+            aluno.getCursos().add(curso);
+            cursoRepository.save(curso);
+            alunoRepository.save(aluno);
+        }
+
+        return cursoMapper.cursoToReponseDto(curso);
+    }
+
 
 }
