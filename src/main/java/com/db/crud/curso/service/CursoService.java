@@ -1,10 +1,10 @@
 package com.db.crud.curso.service;
 
-import com.db.crud.curso.dto.requestDto.CursoRequestDto;
-import com.db.crud.curso.dto.responseDto.CursoAlunoListResponseDto;
-import com.db.crud.curso.dto.responseDto.CursoResponseDto;
-import com.db.crud.curso.mappers.AlunoMapper;
-import com.db.crud.curso.mappers.CursoMapper;
+import com.db.crud.curso.model.dto.requestDto.CursoRequestDto;
+import com.db.crud.curso.model.dto.responseDto.CursoAlunoListResponseDto;
+import com.db.crud.curso.model.dto.responseDto.CursoResponseDto;
+import com.db.crud.curso.model.mappers.AlunoMapper;
+import com.db.crud.curso.model.mappers.CursoMapper;
 import com.db.crud.curso.model.Curso;
 import com.db.crud.curso.repository.CursoReposity;
 import lombok.AllArgsConstructor;
@@ -40,6 +40,7 @@ public class CursoService {
     public CursoResponseDto atualizarCurso(CursoRequestDto cursoRequestDto) {
         Curso curso = cursoReposity.findByMatricula(cursoRequestDto.matricula()).orElseThrow(() -> new RuntimeException("not found"));
         cursoMapper.atualizar(cursoRequestDto, curso);
+        cursoReposity.save(curso);
         return cursoMapper.cursoToReponseDto(curso);
     }
 

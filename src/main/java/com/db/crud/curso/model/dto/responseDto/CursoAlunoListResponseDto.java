@@ -1,4 +1,4 @@
-package com.db.crud.curso.dto.responseDto;
+package com.db.crud.curso.model.dto.responseDto;
 
 import com.db.crud.curso.model.Aluno;
 

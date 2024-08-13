@@ -1,4 +1,4 @@
-package com.db.crud.curso.dto.responseDto;
+package com.db.crud.curso.model.dto.responseDto;
 
 public record AlunoNomeResponseDto(
         String nome
