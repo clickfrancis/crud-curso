@@ -1,10 +1,8 @@
 package com.db.crud.curso.model.mappers;
 
-import com.db.crud.curso.model.Aluno;
 import com.db.crud.curso.model.Professor;
 import com.db.crud.curso.model.dto.requestDto.ProfessorRequestDto;
 import com.db.crud.curso.model.dto.requestDto.ProfessorUpdateDto;
-import com.db.crud.curso.model.dto.responseDto.AlunoUpdateDto;
 import com.db.crud.curso.model.dto.responseDto.ProfessorResponseDto;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;

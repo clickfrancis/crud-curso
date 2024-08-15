@@ -29,9 +29,6 @@ public class Curso {
     @Column(name = "nome_curso")
     private String nome;
 
-    @NotNull
-    @Column(name = "matricula_curso", unique = true)
-    private Long matricula;
 
     @ManyToMany(mappedBy = "cursos")
     List<Aluno> alunos;

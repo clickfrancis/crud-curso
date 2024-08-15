@@ -23,10 +23,6 @@ public class Aluno {
     @Column(name = "nome_aluno")
     private String nome;
 
-    @NotNull
-    @Column(name = "matricula_aluno", unique = true)
-    private Long matricula;
-
     @ManyToMany
     @JoinTable(
             name = "alunos_cursos",

@@ -10,7 +10,7 @@ import java.util.Optional;
 
 public interface AlunoRepository extends JpaRepository<Aluno, Long> {
 
-    Optional<Aluno> findByMatricula(Long matricula);
+    //todo Optional<Aluno> findByMatricula(Long matricula);
 
     @Transactional
     @Query(value = """

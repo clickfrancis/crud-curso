@@ -2,7 +2,7 @@ package com.db.crud.curso.controller;
 
 import com.db.crud.curso.model.dto.requestDto.AlunoRequestDto;
 import com.db.crud.curso.model.dto.responseDto.AlunoResponseDto;
-import com.db.crud.curso.model.dto.responseDto.AlunoUpdateDto;
+import com.db.crud.curso.model.dto.requestDto.AlunoUpdateDto;
 import com.db.crud.curso.service.AlunoService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,26 +30,26 @@ public class AlunoController {
         return ResponseEntity.status(HttpStatus.OK).body(alunoService.listarAlunos());
     }
 
-    @PutMapping("/{matricula}")
-    public ResponseEntity<AlunoResponseDto> atualizarAluno(@RequestBody @Valid AlunoUpdateDto content, @Valid @PathVariable Long matricula) {
-        AlunoResponseDto alunoAtualizado = alunoService.atualizarAluno(content, matricula);
+    @PutMapping("/{id}")
+    public ResponseEntity<AlunoResponseDto> atualizarAluno(@RequestBody @Valid AlunoUpdateDto content, @Valid @PathVariable Long id) {
+        AlunoResponseDto alunoAtualizado = alunoService.atualizarAluno(content, id);
         return ResponseEntity.status(HttpStatus.OK).body(alunoAtualizado);
     }
 
-    @DeleteMapping("/{matricula}")
-    public ResponseEntity<Void> excluirAluno(@PathVariable Long matricula) {
-        alunoService.excluirAluno(matricula);
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> excluirAluno(@PathVariable Long id) {
+        alunoService.excluirAluno(id);
         return ResponseEntity.status(HttpStatus.OK).build();
     }
-
-    @DeleteMapping("/{matriculaAluno}/cursos/{matriculaCurso}")
-    public ResponseEntity<Void> desvincularAlunoDoCurso(@PathVariable Long matriculaAluno, @PathVariable Long matriculaCurso) {
-        alunoService.desvincularAlunoDoCurso(matriculaAluno, matriculaCurso);
-        return ResponseEntity.status(HttpStatus.OK).build();
-    }
-
-    @GetMapping("/{matricula}/cursos/{nome}")
-    public boolean verificarCadastroNoCurso(@PathVariable Long matricula, @PathVariable String nome) {
-        return alunoService.verificarCadastroNoCurso(matricula, nome);
-    }
+//todo
+//    @DeleteMapping("/{matriculaAluno}/cursos/{matriculaCurso}")
+//    public ResponseEntity<Void> desvincularAlunoDoCurso(@PathVariable Long matriculaAluno, @PathVariable Long matriculaCurso) {
+//        alunoService.desvincularAlunoDoCurso(matriculaAluno, matriculaCurso);
+//        return ResponseEntity.status(HttpStatus.OK).build();
+//    }
+//todo
+//    @GetMapping("/{matricula}/cursos/{nome}")
+//    public boolean verificarCadastroNoCurso(@PathVariable Long matricula, @PathVariable String nome) {
+//        return alunoService.verificarCadastroNoCurso(matricula, nome);
+//    }
 }

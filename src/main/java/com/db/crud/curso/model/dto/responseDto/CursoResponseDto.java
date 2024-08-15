@@ -9,9 +9,6 @@ public record CursoResponseDto(
         @NotBlank(message = "name must not be null")
         String nome,
 
-        @NotNull(message = "name must not be null")
-        Long matricula,
-
         List<AlunoResponseDto> alunos
 ) {
 }

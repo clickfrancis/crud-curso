@@ -25,9 +25,6 @@ public class CursoService {
     @Autowired
     CursoRepository cursoRepository;
 
-    @Autowired
-    private AlunoRepository alunoRepository;
-
     private final CursoMapper cursoMapper = CursoMapper.INSTANCE;
 
     public CursoResponseDto cadastrarCurso(CursoRequestDto content) {
@@ -36,8 +33,8 @@ public class CursoService {
         return cursoMapper.cursoToReponseDto(curso);
     }
 
-    public CursoResponseDto atualizarCurso(CursoUpdateDto content, Long matricula) {
-        Curso curso = cursoRepository.findByMatricula(matricula).orElseThrow(() -> new RuntimeException("not found"));
+    public CursoResponseDto atualizarCurso(CursoUpdateDto content, Long id) {
+        Curso curso = cursoRepository.findById(id).orElseThrow(() -> new RuntimeException("not found"));
         cursoMapper.atualizar(content, curso);
         cursoRepository.save(curso);
         return cursoMapper.cursoToReponseDto(curso);
@@ -57,25 +54,25 @@ public class CursoService {
 
     }
 
-    public void excluirCurso(Long matricula) {
-        Curso curso = cursoRepository.findByMatricula(matricula).orElseThrow(() -> new RuntimeException("Not found!"));
+    public void excluirCurso(Long id) {
+        Curso curso = cursoRepository.findById(id).orElseThrow(() -> new RuntimeException("Not found!"));
         cursoRepository.delete(curso);
     }
-
-    @Transactional
-    public CursoResponseDto vincularAlunoACurso(Long matriculaCurso, Long matriculaAluno) {
-        Aluno aluno = alunoRepository.findByMatricula(matriculaAluno).orElseThrow(() -> new RuntimeException("Not found!"));
-        Curso curso = cursoRepository.findByMatricula(matriculaCurso).orElseThrow(() -> new RuntimeException("Not found!"));
-
-        if(!curso.getAlunos().contains(aluno)) {
-            curso.getAlunos().add(aluno);
-            aluno.getCursos().add(curso);
-            cursoRepository.save(curso);
-            alunoRepository.save(aluno);
-        }
-
-        return cursoMapper.cursoToReponseDto(curso);
-    }
+//todo
+//    @Transactional
+//    public CursoResponseDto vincularAlunoACurso(Long matriculaCurso, Long matriculaAluno) {
+//        Aluno aluno = alunoRepository.findByMatricula(matriculaAluno).orElseThrow(() -> new RuntimeException("Not found!"));
+//        Curso curso = cursoRepository.findByMatricula(matriculaCurso).orElseThrow(() -> new RuntimeException("Not found!"));
+//
+//        if(!curso.getAlunos().contains(aluno)) {
+//            curso.getAlunos().add(aluno);
+//            aluno.getCursos().add(curso);
+//            cursoRepository.save(curso);
+//            alunoRepository.save(aluno);
+//        }
+//
+//        return cursoMapper.cursoToReponseDto(curso);
+//    }
 
 
 }

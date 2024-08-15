@@ -5,8 +5,6 @@ import jakarta.validation.constraints.NotNull;
 
 public record AlunoRequestDto(
         @NotBlank(message = "name must not be null")
-        String nome,
-        @NotNull(message = "name must not be null")
-        Long matricula
+        String nome
 ) {
 }

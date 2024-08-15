@@ -4,7 +4,7 @@ import com.db.crud.curso.model.Aluno;
 import com.db.crud.curso.model.Curso;
 import com.db.crud.curso.model.dto.requestDto.AlunoRequestDto;
 import com.db.crud.curso.model.dto.responseDto.AlunoResponseDto;
-import com.db.crud.curso.model.dto.responseDto.AlunoUpdateDto;
+import com.db.crud.curso.model.dto.requestDto.AlunoUpdateDto;
 import com.db.crud.curso.model.mappers.AlunoMapper;
 import com.db.crud.curso.repository.AlunoRepository;
 import com.db.crud.curso.repository.CursoRepository;
@@ -36,8 +36,8 @@ public class AlunoService {
         return  alunoMapper.alunoResponseToDto(aluno);
     }
 
-    public AlunoResponseDto atualizarAluno(AlunoUpdateDto content, Long matricula) {
-        Aluno aluno = alunoRepository.findByMatricula(matricula).orElseThrow(() -> new RuntimeException("Not found"));
+    public AlunoResponseDto atualizarAluno(AlunoUpdateDto content, Long id) {
+        Aluno aluno = alunoRepository.findById(id).orElseThrow(() -> new RuntimeException("Not found"));
         alunoMapper.atualizarEntityFromDto(content, aluno);
         alunoRepository.save(aluno);
         return alunoMapper.alunoResponseToDto(aluno);
@@ -50,25 +50,26 @@ public class AlunoService {
                 .collect(Collectors.toList());
     }
 
-    public void excluirAluno(Long matricula) {
-        Aluno aluno = alunoRepository.findByMatricula(matricula).orElseThrow(() -> new RuntimeException("Not found!"));
+    public void excluirAluno(Long id) {
+        Aluno aluno = alunoRepository.findById(id).orElseThrow(() -> new RuntimeException("Not found!"));
         alunoRepository.delete(aluno);
     }
 
-    @Transactional
-    public void desvincularAlunoDoCurso(Long matriculaAluno, Long matriculaCurso) {
-        Aluno aluno = alunoRepository.findByMatricula(matriculaAluno)
-                .orElseThrow(() -> new RuntimeException("Aluno not found!"));
-        Curso curso = cursoRepository.findByMatricula(matriculaCurso)
-                .orElseThrow(() -> new RuntimeException("Curso not found!"));
-
-        if(curso.getAlunos().contains(aluno)) {
-            aluno.getCursos().remove(curso);
-            alunoRepository.save(aluno);
-        }
-    }
-
-    public boolean verificarCadastroNoCurso(Long matricula, String nome) {
-        return alunoRepository.isAlunoCadastradoNoCurso(matricula, nome);
-    }
+//    todo
+//    @Transactional
+//    public void desvincularAlunoDoCurso(Long matriculaAluno, Long matriculaCurso) {
+//        Aluno aluno = alunoRepository.findByMatricula(matriculaAluno)
+//                .orElseThrow(() -> new RuntimeException("Aluno not found!"));
+//        Curso curso = cursoRepository.findByMatricula(matriculaCurso)
+//                .orElseThrow(() -> new RuntimeException("Curso not found!"));
+//
+//        if(curso.getAlunos().contains(aluno)) {
+//            aluno.getCursos().remove(curso);
+//            alunoRepository.save(aluno);
+//        }
+//    }
+//
+//    public boolean verificarCadastroNoCurso(Long matricula, String nome) {
+//        return alunoRepository.isAlunoCadastradoNoCurso(matricula, nome);
+//    }
 }

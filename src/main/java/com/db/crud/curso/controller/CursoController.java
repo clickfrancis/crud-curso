@@ -36,21 +36,21 @@ public class CursoController {
         return ResponseEntity.status(HttpStatus.OK).body(cursoService.listarTodosAlunosDoCurso(nome));
     }
 
-    @PutMapping("/{matricula}")
-    public ResponseEntity<CursoResponseDto> atualizarAluno(@RequestBody @Valid CursoUpdateDto content, @Valid @PathVariable Long matricula) {
-        CursoResponseDto cursoAtualizado = cursoService.atualizarCurso(content, matricula);
+    @PutMapping("/{id}")
+    public ResponseEntity<CursoResponseDto> atualizarAluno(@RequestBody @Valid CursoUpdateDto content, @Valid @PathVariable Long id) {
+        CursoResponseDto cursoAtualizado = cursoService.atualizarCurso(content, id);
         return ResponseEntity.status(HttpStatus.OK).body(cursoAtualizado);
     }
 
-    @DeleteMapping("/{matricula}")
-    public ResponseEntity<Void> excluirAluno(@PathVariable Long matricula) {
-        cursoService.excluirCurso(matricula);
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> excluirAluno(@PathVariable Long id) {
+        cursoService.excluirCurso(id);
         return ResponseEntity.status(HttpStatus.OK).build();
     }
-
-    @PostMapping("/{matriculaCurso}/alunos/{matriculaAluno}")
-    public ResponseEntity<CursoResponseDto> associarAluno(@PathVariable Long matriculaCurso, @PathVariable Long matriculaAluno) {
-        CursoResponseDto alunoAdicionado = cursoService.vincularAlunoACurso(matriculaCurso, matriculaAluno);
-        return ResponseEntity.status(HttpStatus.OK).body(alunoAdicionado);
-    }
+//todo
+//    @PostMapping("/{matriculaCurso}/alunos/{matriculaAluno}")
+//    public ResponseEntity<CursoResponseDto> associarAluno(@PathVariable Long matriculaCurso, @PathVariable Long matriculaAluno) {
+//        CursoResponseDto alunoAdicionado = cursoService.vincularAlunoACurso(matriculaCurso, matriculaAluno);
+//        return ResponseEntity.status(HttpStatus.OK).body(alunoAdicionado);
+//    }
 }
