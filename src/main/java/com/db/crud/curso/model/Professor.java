@@ -23,10 +23,6 @@ public class Professor {
     @Column(name = "nome_professor")
     private String nome;
 
-    @NotBlank
-    @Column(name = "matricula_professor")
-    private Long matricula;
-
     @OneToMany(mappedBy = "professor")
     List<Curso> cursos;
 
